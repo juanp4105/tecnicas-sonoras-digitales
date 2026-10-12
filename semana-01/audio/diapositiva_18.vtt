@@ -1,0 +1,37 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:02.871
+Veamos cada etapa con equipos concretos.
+
+00:00:02.871 --> 00:00:06.283
+La captura es el ingreso del sonido al sistema.
+
+00:00:06.283 --> 00:00:16.089
+El micrófono dinámico es robusto y menos sensible, así que funciona con voces potentes, ambientes ruidosos y transmisiones en directo.
+
+00:00:16.089 --> 00:00:20.618
+Conviene usarlo con preamplificadores limpios y un filtro antipop.
+
+00:00:20.618 --> 00:00:26.332
+El micrófono de condensador tiene alta sensibilidad y una respuesta amplia en frecuencia.
+
+00:00:26.332 --> 00:00:32.123
+Necesita alimentación phantom de cuarenta y ocho voltios y rinde mejor en estudios tratados.
+
+00:00:32.123 --> 00:00:36.102
+La interfaz de audio convierte la señal analógica en digital.
+
+00:00:36.102 --> 00:00:41.696
+Elíjala por su rango dinámico y su latencia, y mantenga sus controladores estables.
+
+00:00:41.696 --> 00:00:44.380
+El procesamiento transforma la señal.
+
+00:00:44.380 --> 00:00:52.548
+En una estación de trabajo como Reaper conviene organizar las pistas por función narrativa y respaldar el proyecto con frecuencia.
+
+00:00:52.548 --> 00:01:00.004
+Los complementos de inteligencia artificial limpian y normalizan, pero el exceso de reducción deja artefactos.
+
+00:01:00.004 --> 00:01:02.522
+Compare siempre el antes y el después.

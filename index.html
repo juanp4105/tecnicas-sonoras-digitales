@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Repositorio Técnicas Sonoras</title>
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..100,500..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: una sesión multipista. Cabecera con datos de la asignatura, barra de avance como transporte
+   y ocho pistas (una por semana) que se apilan; la pista con clase publicada muestra su forma de onda,
+   la bloqueada una línea plana. */
+:root{
+  --bg:#f1eee5; --surface:#fbfaf6; --fg:#1b1c20; --muted:#5d5e65; --line:#d8d4c7;
+  --accent:#4b3c92; --lime:#6f7d12; --lime-bg:#a8bd2c; --on-lime:#15160f; --signal:#c0412a;
+  --lock-bg:#e7e3d8; --wave-off:#bdb8aa;
+  --display:'Archivo','Arial Narrow',system-ui,sans-serif;
+  --body:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+  font-size:16px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121316; --surface:#1b1c20; --fg:#ecebe5; --muted:#a3a49d; --line:#2d2f35;
+    --accent:#b2a6ec; --lime:#c5d64e; --lime-bg:#c5d64e; --on-lime:#15160f; --signal:#e8866c;
+    --lock-bg:#17181b; --wave-off:#3a3c43; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121316; --surface:#1b1c20; --fg:#ecebe5; --muted:#a3a49d; --line:#2d2f35;
+  --accent:#b2a6ec; --lime:#c5d64e; --lime-bg:#c5d64e; --on-lime:#15160f; --signal:#e8866c;
+  --lock-bg:#17181b; --wave-off:#3a3c43; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg); color:var(--fg); margin:0; font-family:var(--body); line-height:1.5; padding-inline:16px; padding-block:28px 56px}
+.envoltura{max-width:1040px; margin:0 auto; display:flex; flex-direction:column; gap:28px}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--lime-bg); outline-offset:3px}
+
+.cabecera{display:grid; grid-template-columns:1fr auto; gap:18px 28px; align-items:end}
+.marca{display:inline-flex; background:#fff; border-radius:8px; padding:6px 10px; width:fit-content; grid-column:1/-1}
+.marca img{display:block; height:30px; width:auto}
+.eyebrow{font-family:var(--mono); font-size:.74rem; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin:0}
+h1{font-family:var(--display); font-stretch:68%; font-weight:800; text-transform:uppercase; font-size:clamp(2.6rem, 8vw, 5.2rem); line-height:.9; letter-spacing:-.01em; margin:.35rem 0 0; text-wrap:balance}
+.ficha{margin:0; display:grid; grid-template-columns:auto 1fr; gap:4px 14px; font-size:.86rem; min-width:0}
+.ficha dt{font-family:var(--mono); font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); padding-top:.2em}
+.ficha dd{margin:0}
+.intro{grid-column:1/-1; margin:0; max-width:68ch; color:var(--muted)}
+
+/* transporte */
+.transporte{display:grid; grid-template-columns:auto 1fr auto; gap:10px 18px; align-items:center; background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:14px 18px}
+.contador{font-family:var(--mono); font-size:1.35rem; font-weight:500; font-variant-numeric:tabular-nums; white-space:nowrap}
+.regla{position:relative; height:34px; display:grid; grid-template-columns:repeat(8,1fr); border-left:1px solid var(--line)}
+.regla span{border-right:1px solid var(--line); font-family:var(--mono); font-size:.66rem; color:var(--muted); padding:1px 4px; position:relative}
+.regla span.on{background:color-mix(in srgb, var(--lime-bg) 32%, transparent); color:var(--fg)}
+.cabezal{position:absolute; top:-4px; bottom:-4px; width:2px; background:var(--signal)}
+.cabezal::before{content:""; position:absolute; top:0; left:-5px; border:6px solid transparent; border-top-color:var(--signal)}
+.transporte .nota{font-size:.82rem; color:var(--muted); grid-column:1/-1; margin:0}
+
+/* pistas */
+.pistas{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px}
+.pista{display:grid; grid-template-columns:88px minmax(0,1fr) 210px; background:var(--surface); border:1px solid var(--line); border-radius:12px; overflow:hidden; min-width:0}
+.pista.bloqueada{background:var(--lock-bg)}
+.canal{display:flex; flex-direction:column; justify-content:space-between; gap:8px; padding:14px 12px; border-right:1px solid var(--line); font-family:var(--mono)}
+.canal .s{font-size:.66rem; letter-spacing:.12em; color:var(--muted)}
+.canal .n{font-family:var(--display); font-stretch:68%; font-weight:800; font-size:2.6rem; line-height:.9}
+.pista.publicada .canal{background:var(--lime-bg); color:var(--on-lime); border-right-color:transparent}
+.pista.publicada .canal .s{color:var(--on-lime)}
+.led{width:10px; height:10px; border-radius:50%; background:var(--wave-off)}
+.pista.publicada .led{background:var(--signal); box-shadow:0 0 0 3px color-mix(in srgb, var(--signal) 30%, transparent)}
+.cuerpo{padding:14px 18px; display:flex; flex-direction:column; gap:6px; min-width:0}
+.unidad{font-family:var(--mono); font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin:0}
+.cuerpo h2{font-family:var(--display); font-stretch:85%; font-weight:700; font-size:1.3rem; line-height:1.15; margin:0; text-wrap:balance}
+.pista.bloqueada h2{color:var(--muted)}
+.temas{margin:2px 0 0; padding:0; list-style:none; display:flex; flex-wrap:wrap; gap:6px}
+.temas li{font-size:.78rem; border:1px solid var(--line); border-radius:999px; padding:2px 10px; color:var(--muted); background:var(--surface)}
+.onda{display:block; width:100%; height:38px; margin-top:6px}
+.lado{display:flex; flex-direction:column; justify-content:center; gap:8px; padding:14px 18px; border-left:1px solid var(--line)}
+.estado{display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; width:fit-content; padding:3px 9px; border-radius:999px}
+.estado.on{background:color-mix(in srgb, var(--lime-bg) 28%, transparent); color:var(--fg)}
+.estado.off{background:transparent; border:1px dashed var(--wave-off); color:var(--muted)}
+.estado svg{width:13px; height:13px}
+.boton{display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:44px; padding:10px 16px; border-radius:999px; background:var(--fg); color:var(--bg); font-weight:600; text-decoration:none; font-size:.92rem}
+.boton:hover{background:var(--accent); color:#fff}
+.boton svg{width:16px; height:16px}
+.meta{font-size:.78rem; color:var(--muted); margin:0; font-variant-numeric:tabular-nums}
+.avance-propio{font-family:var(--mono); font-size:.74rem; color:var(--fg); margin:0}
+.espera{font-size:.82rem; color:var(--muted); margin:0}
+
+.visitas{grid-column:2; justify-self:end; display:inline-flex; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:8px 12px}
+.visitas .etq{font-family:var(--mono); font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); line-height:1.25}
+.visitas .digitos{display:inline-flex; gap:3px}
+.visitas .digitos span{font-family:var(--mono); font-size:1.25rem; font-weight:500; font-variant-numeric:tabular-nums; min-width:1.15em; text-align:center; padding:3px 2px; border-radius:4px; background:var(--fg); color:var(--bg)}
+.pie{border-top:1px solid var(--line); padding-top:16px; color:var(--muted); font-size:.85rem; display:grid; gap:8px}
+.pie p{margin:0; max-width:80ch}
+.pie b{color:var(--fg)}
+
+@media (max-width:760px){
+  .cabecera{grid-template-columns:1fr}
+  .pista{grid-template-columns:64px minmax(0,1fr)}
+  .canal .n{font-size:2rem}
+  .lado{grid-column:1/-1; border-left:0; border-top:1px solid var(--line); flex-direction:row; flex-wrap:wrap; align-items:center; justify-content:space-between}
+  .transporte{grid-template-columns:1fr}
+  .visitas{grid-column:1; justify-self:start}
+}
+@media (prefers-reduced-motion:no-preference){
+  .pista.publicada .onda rect{transform-origin:center; animation:sube .7s ease-out both}
+  @keyframes sube{from{transform:scaleY(.2)}to{transform:scaleY(1)}}
+}
+</style>
+
+<div class="envoltura">
+  <header class="cabecera">
+    <div class="marca"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWIAAACOCAMAAAA8c/IFAAAAvVBMVEX///8AQXAAK2QANWkAOmwAPG0AN2qZprgAPm7m6e2Ln7MAMWcAKGIALWWirr56jKQ0W4G/ydTt8fQAM2hGaItog54AIF/X3+ZjepkAHl7q7/Kaq737+/4AJGBWc5Owu8pFY4jL0t0AAFQTRnNziKMAFlsAEVmzvczT2eIAB1e7xNGOn7cAFVsADViElq4mUn0wV4ImVH04X4QAB1hVcJQAAEyrt8paeJaZqMHP1dxfeJpFZ4kdS3aDmq9zi6OGL5rmAAAYSUlEQVR4nO2dbWOiutaGwzvIiwICIgGkYmFwitbTraet9f//rGcl2IoVtJ097jPuh/uDVQshXC5WVlZCQKhTp06dOnXq1KlTp06dOnXq1KlTp98kbJrK/7oON6PEMH9hL+XelX57Vf6tcvzyF/ZSWC747VX5t6rUR7+wV4f4G1KmHeJry3v4BWfcIf6W5rr17X06xBeEWd0jf1P6mj/k9MN3QHeILwiHLKFq3VG2A+qMU/87gW6H+IKwoBL7NUPyoXCJ+QY/KG6r97USOsSXFL+S1/4TeTVnxHzvDPreX+EvFdAhvqQ1RRw/FOTP5AVenvrwIt3P6b+xwXnnC+gQX1KFGEnUGXt/JfANj/acQX2NvRAsd4jbZa3Ja3ZfZRhKkfgFBZyx9R+w25QgxoHNbcvx+WI6xO1S7mjgYLKLyhXETwBbGY3GCL7vOfCNyhtfKKZD3C4mpn9wtCB/kuXS6aNFulyST9EQzPmhYn/eGXeIm2SlKfmTPlUxg0kRF+VaepoXjCXAh+w/4JS9H/BOGup/nQ2TO8RNMsKQWGaiPkQkkCgoYjR/wpKOswjaPSskac2Ag/7efWmed8Yd4kYttIz+TdIfYK0ZU307LTN1vCXB2tMAbHt5B5xH0aWyOsSNspbp/t0EiHqcQPtzk0EhGy/QwmU/LfT00IfoAvsk96aMx56TZs1ldYibld/t/atEG7fUB+RPqZGG6/KpsO7AffAFSsrVA0e2uXv4ca+GLUMiHeIWPS2luLAIa4PkJRRCPJ3GKFokSEqsMb7z0MNESqBBVH6sFUXp94vmkjrELVJGk4VL+m1z5i5F83umNPcZTOytI5cdp3itwgfLspbn3TEg/mLC6P+h8jsa8SqJNHEmvu/b0+VgIYf+jO9PewZ6mqOx/3D/wJ5PByms2CH+rKd3s3wZklcj8yIT4UQqR5PJU9rLwGlsY+sFnMdqCC6CWre1bQuOO8QNUsI+QmOI1pQHn59aZVGOCmSZJKqAL60C3myzoVWiwKd4wYrxtjW12SFuUu5Pwx8PECFYuZkV+ZMXmsqDdu+geYirN4vINFPjL9LDxgt3MRosWgvrEDcqiRMrfyApNgUlZqQMClSkpTXWxZS+ASuW8hGiNjzZJnE/ah/N6xC3K7kfbmd3AYqs4aIa3B9qajU+ClYsJWs03EZSxF8Y/GhD3JM+1Gv5gXB9m5O9vqgqlnxu+7dRNGexito2ySVUv6TcMDKzzPLir0yJlHQxmUDnI0/yxEL5YDJRvXWJXsS4HG29vtNrCYmp2hDPxA/5LVkOyz9s8/Nkr69J39H9DK353xyn6uyrdNpW7/SPbbRrXIWBoHOcPnLIGMdAGUkTXuZIkGyRqii+LAvD5CUhPUCzmHC8qLJlqy23IdaYD7FtiNnDNtrJXl+TWA3PGNyZbQROW32ehNPnP/59hbg+Z3TO1nWdtV1y4JUlSSKjYfjeDf0RRn2R0ZW4TOAKi/1QC0NWt3W7baLQDSAmlPXBscO4KuLsPlzNC0/xzL6WUqdkCYwtITyJQMM5whwjGoFFgoj0kXT6rDxOuR8t3eTbQMwwsnY0R/eaiAve2Lc+VpwBtqWXlVP5KCiLOZmx5nOw23UwyvcuIpk0jzLdCmKG0Te1Y18T8X+t59zop7uXLasygM+0Y2ceipz6IZtX9TxyXkiXI+Q0fbqcLFMI8/7bWN7tIGa4WrblioidwZrh0rhY915W05CEaFjCKFsfy4N2jmyNH4ej0oiLrBxsg9WgqcAbQszY6cexr4c4vi/SPCu3GjMspXWRQJhmJk3RgjU3ALVhSOXLgJ+W63Wimo2z6G8JMcPG78e+HmJ7ktlONlfALifOYjqN0tII8oYNvWw+2tquG47S/yZ5MU+XQj5pmk94U4gZ+70XdDXEhi2WeY/ho5csMMvEUpSkKOV+w5ajgZGT5LE0WmcvkaiPzPGQFxu2vC3E4m5/7KshnsqMSwYy4v5S5/n5o6arzGjd0IG0Mmm0FBhmMO9pg3RNYkocMjJ/uuXvRewKJ6oTkk/+a58ilmu9u6O9ifT9hXgtxIrGyNuPE1QUehyB05fHPUxsDHxbFGSoLT85fA2/D3va4f+9iAfDE01r8E7/PakOXkMsr4KP7MPbSNAPLCnPt+pA10Icq4wwrH027jVWFWWGMx9GIwm6I2PFK6SJO52XIoHPi/bksPUQeiinw9C/F3GDBvLHRmprwqaGmHeO/uNtjpyPvJ/RcC3EEsfwnyZaKmY59QtvmQyNySvru7w4KgsvMBnoYk9G/XJ+2PRFYLjTuxj/UcStt/u0I4ZOE3coATxF1bhfC3HKM3xTi1VO+lmmpUqZGGZmrMv1S5lmJ1xg74b27s9HjDy9hng/Xn4txCOARMtThlFNmzIxXxZGuS6D53W8CJ56iTkfbWpb9Pa1uk3EEEgdDiRU3egrWrFIuw9KyL9L5OBF3Up50YsG0wXYc5I5sioK/EG2s6/VjSImLfW75Cnan8xVEEMjVlXgcOkIUUoOJnPq1pEgXrD6S9uuQh31U63JNXCLvhj0Jh6OROeqXw0xVESgN84AYtkWRbh+7CIH3OQ9L2jgprzw/YwETz2udQQRxfqkzJtAbB7MhVFpB+9aiOFIAs3leLo8ULIM6KqJuZX1pMi8SCDHerdvXtfwvS7Xaw3nqp/2tW8Ccb3Bqzof10I8hvMWqkPKk9iIS0nv99JA70vrtTSqI+bTsYIUayLXag2WEJ5mjG4Ccf1I7FURI4i8WXKdEMRrjIJcTcogDz2Ifo8RM9PtBAmLeq0VFjpOp0XeBGKldqTrWjFp72gPiSIG1qOkSMZB7pCs8TFiRlgiTa7XGrxMQ2t3G4iTf8wXI3C+NPR+R/wcQ30ckn4/RRwh/ajWPbEpRXEbiOtZoutGFAhtZdqD3iO2kAN2WQwRxpcRr+RDCqmmm0A8OGTcrhwXkywFzYPsEacIL4HzCpXWKeIRYuu1Bh4NGYrbQJzUAoor9+6o3ydX+x6xmqNgaKB+oZ1aMdTUrte6UPdt8UmJfz7iWufu3U6uODw6EEibtUe8HiI0HCBv8tKImKvXOuXlZVOBN4D4tZ4yvnKmDTTnIFTYI8bFJEPPsoeCZsRivdZbubkqfzzifFsnfO18MaKhlz5+t+J5SnD3UbxsQJyiZS1oAw/TfIJ/HGLBIa33Xl78qtezxVcf9QCNWTJ04WkUse2ZJZwDwu5FxOSnabwX4Y9DzAj2h3TW/jR6p+/rckXEWKRZ+UeeIN4iT7bw0kRPp4jFEk1qiCVuH7N/1p+H+JyuPwKNSOtKJrCNWehAJxKEbWkfOajBFwPip3cLAMTQL+QaJ8DeFmLu6vMoEGm2GDJU/7xYo5GFyqAwpMAaNSCWjhD3/xWItY/J6NdEvJCrKz43lCFa57MsuU8M5xQxZyDnvRq/YsXhH4hYPQzaXNdRgMsnsJKyQE6hThe2UTZYMReQYY46YvtbiGuJF71l0RCl1ukKWyv8+xCrtXDumojJKVtjkphPsLKeCIwsP5r6Z8Scbcdgxaz4jngOzV2jMbYhrp1zQyKfqp4ot1sr/NsQs/WA+YqILZuk8yx/QkwySNgKgfgJsRYXdwYa3eG+vUcc2y3G2Ia41mm1W27HqQ337JMzTfpNiAX2aAr6FRGTi5PDFsvTO24TlZgp3/+UBhIl6PkpKC+Q5wgV4kRl1EZSbYhXwsVzqM+SGjZvgn4TYoEdHkf1V0RcqMRioAPC6/TeUEeTGXkgfcq06VahZSjVrMrQADHswTXeidCGeHNALLTwcw6n2ZSB3OvvI5ZF9vUfvGNpDl2PJwAmDIbaiDiLfKAKq0+IhQlKwwSVYYb4dwCyzKdNBbYhLmvj6mpzXRj5K6f5fcRyTTynsou3Uxd3RcTQvolzNNZYXPIiT2cBxvzyE2Jo6rZ6guZ6WlkaQTwUmv1lG+K4NgOn2cXUs7ht7hr9CuLphx5fnV7R2O+/HmKs0oqOZ8EYzEzWqYfCQe8YMWspGjRuhj2tOBDEkliNrH5WG+K8BrBpWBVcSS0D1pz/oPodox6nuh5i4ltVjMaPlknNjK/Ww/M+IgoyVis8gQ1SxJqCyDRjUmtg3XiGrbeZ1+ecsg17Hk3ma4/Zbg4xmZsZAZcNMkhsIT+iNKf1xvMDYpWExGBXMQmOyXwsWmuuaUbbGcSvtRyXzJx2Wx5r/+c3DQXsdWuIfZUAREqEetSKVJSVKKBX6RP3jpjF0BJRxFBdcsHTWo/4pvsQ2hEHdfdYn21fKao1h01Twz90W4jXcZGopB88fkRvOZlEuDOfUc5qdM7txq0QCxvyShGTMQJZrmqdqY3dtFbE41qWAkLtwZEjx8OjKEs/syLDTSE2fXUR6yT0Gt+h7NljGfXZ660TOEV6X2X/jSIGkzJodhgcN+t9TOfEIcd+444lMiugTlFQgw/I2OCO7sA4S+XqiMUeWcirTV9bi/yjWJGLt3S5zPF9gh3wlmqAYjpVRpySBIRHEUMUK2mkUQTEYU6aparW2XrdcI9uO+JCZY7EqZFUJEkhbdRPHQW2JYlBdXXEjMDZrVIbg6H2ygqqKVJ7Hbs7tMFJGD0Dwq1MD1OFTcSKE+ihuC7EXTPNpD61qrUmq9np/SxnFq6ZHpkxOYhoq6ot8p++5tt7z+ifQHxO5+t2IlXm9u8sTcXPPbJKcbDDbzzDCcy2YkwmB5KZFgmcjWXCm0Lb+2KkQ5fk67PkQaZ++RSImuZxHfS/RdzW+W+RdpgJodkBGiJlhjHCoqgGL6qnMXRpR1ZcMPKhaYKAYivQWlsaeOnypPdxbvml4ZfOg2uKBQ+6KcTh+yQCuIYFHnkO4geKuQ1HFlL8vqSTJLLiltjC1tgiTQDG8BfjlU1uEAHYdpbNPxd6DrHFfXYVDWqcKVfTTSHmDsM3I150oHWzuZ27BHc8TeYzj97nrvjxPM6DvlSsR2VR9NIilxyd5NgMG4K2/KSBPbuImHn5nmZZvfAsnJtC/CTYJrOm+TLgJTK7fKVGC4RHAwUMbmj6FWIpzo0yMON0bhZSv8gNR0vo3ozeUOj5ddriS4zls9EE0U0hNmw+TWPaRYOYmJHtjSP1V2M1gTYtKWbmYG/F64MVz6kV+2SBFZ0RXhoKvbAUXhye9RWCeonwbSEGSropDWg9IVITQkNJ0chEysJBWBkwiUF9McJkxhKivpi8wQMSG2Y2yXGe6tJqg8+i2H4C9uLCU0PQjSFGhh8ucfU4sMC2nxTkGTmWx0sFSWruzeYWJSZyqm3TJXUTn+NslVOJKx4KZKGxU11c0BE7YcvpfG0RuttCjHLrOeXoNAocgrWOAG4SSMjkJeQlTqgcbjwRrfHHLRIELcldPDUV+YU1M/OhJp64C5ljd5dNGN0cYoTW2v5G61LHwwKZgoQYxcHIWXg4jA+IZdN4R0xzmKkITqapwC8tS6q8bTXo1cmUliwInMqujPalTo+0DbV3PbSOjUg/PzbyLz7EgcjxtS/JbVxz6rzE/RRbzKZIGYwwDpIRCsQCeUO/jjiJX/aIyWCHpbeNw3915VclK6PHKW/bwna16Zlf5EsqenBPZ1IytY2+lLj52lZnD9mqObe/zda4V0oPBXyBJnmAcDrjY+sIsbOmiG0yc78vMvb3lsJrqfFXT+2WhW24Uum7xxVK5DlSHGWJDDbseU/HVpzOCWLhEVWZC7m5vLHaLdf/WT2O4Wg3OH8oMgul2xz1p/7IK+/DJsQ0RwPhhN4UsaEOcaPAGWu007rhUabGyBpp7jpbmMq8ATFdPC7W97enN6hD3CBT2wMb+2QFirmvrpP8wUD5/SlilcwqJ5NUtbaEY4e4SQ60XdRV9Ga4EGel9yQ/cRukTE8Qu3RkeCkw6kmG7V0d4kaBqwhpkMvos8grV2tX9aEfna0/I6ajKiOuYQD5Q+2I8em4l2UdXqsvjLPPqDffg+f4U0Qcv7cM2GtM1DlGtdOZ8uPjxsU6DiMT40v9olbRkXxy5Re8mZGl2HKybub2U1yclrT2pcrIZ9bsb0cc3H1uIfEP4qC8u8PkOOOvppt+P6TeVwf2/nOctrfu9/2Lne/78mG0K4kqos59Rh6JuEPBX20PgLIejrooyt1xj2X613ce6d4g04UObOVd3+7NgJwHVubaMeIRrboE8VrbNHeidsSR+9kQEjKNABnuwSS9830Qc09v7R4bo+lWQfogfI1L1v0oo5xVo2N09USyU3v5pntkALF7HPabZ6+uryjWPhjHs1DyDCSLC/UI8Xrfz2aY8FzCsR2xVg1neG8bZ382PZcg24RjtJPi1x38sm9vqEf+khdjSGwQ72JziMzNBk7Z28H28XAzdkILB86GPr2iiCKv59K6v5GV2lHmoaSMUjKSuxV34BzKYUpq7AB6KB8+R6mHxpIzerdoUsQbFIF7q9HeelJ3TyMakq2UnYnycuO0z2a8LAMY77MquRAtw/lWpsnKd8R8Qg1oBF5CP/vci1bEXrh/HoQ/4PYm8koXvoGeuOLqsqiXcLVu0GZmoeR+h4b+cOsnYF2P98Nk9hrd7dDbgwegpgNm+ghOZrtl4Ud7c5kVO6DjvJh9n55UsgPSmkwFhjctMVzZLjAWH9H4p4MUXVvpPvbuHmWtmtdV+vKKW8gIT8NICKtLTaiKcvzt1oXfLbhPUE8bqO6ZaUoXlWkyw+4fWT5kGZLUrSG2aVSnDDj4Ic4nzVsRG2FVPTL5iK0cnUuaT8XdoZhNUQ4nTC740rfQwEaSXyCs7VDP3iZoB79FhtFAhC1g15TcagQWHAEpkpfpVcvCF+H7keEYz/DBDOGnfNUS5GkjOE4fFeANthBvEnvB5D4XsnHuQxFvUIQDluv51LSVsCrRd4ghWCiCCuCDmfyiEk5g2GXVHgesUEcss/RO4fVWZcTWR4Tt1Yp441Z7mmUv1ml5OXXFMZy2A1jJJ3K1Sr5i/ozB5hTPsx20IilVw10pZAghQhHpJRXgvRWpjCMb9cNn4tPpVSGF79dxVvYMzaDFKYQSYh7hOAXqu0riVmuHe73SZCbk3a4qYo3dSPFMWieUhbTEIbnMiBciJlaQQv/e4xKVhR7lc4m22cpKPSC2t3SN+azAc/flUtqmFTFXDXfvfm7eHqs8qEEbLZKW5uGKD+DTgIWz873HRziurGmaGiCXGvxbqD0DhgBNSWok8K3c375t1AjsHSpUzKjjlMJ9mzT0nZIYK1wM1HAhFBnSnxG8QUD9P1r/XL29qrSmA3IDWjbznnVe09iqarvKFYvkMuv7igfgI1LoxZHFS0qLiZUba0rRUMWquRNYWpFk0M/C4vLjzNsQey4NzcYzB1FfACpD8rA3FXj6cP1FrIUJT1Nz/By+qkohWIme7QWYU44E8kM9btFQxXDpB2hLvPCQpdvEWmWgyQz2jTjwM1BcRtxn4UpI3CILLn/JpZTIVIKCPqwWPZJx+CGPEv/QmE2reyWofxS2YAyJN4PCN+rfTgxKKivlSUCTm5ZDO9A/yMR5nA0WSV9vvoHgWG2I1/oui2PTA8/r6Y/0q1gbPCcDuH4pBv6xir08nd5yaE/HKEAUK+oNMZpu0QrOe6XHlqPv0IInj9nK0UYPrLe9a8e6HniGqBRwlZthhBLN8bDir8bPgoqJyy+gfNPd4NjE7ArhbbXMHCmiZDfIcicIVz/oOBwUMfRFIs20RtA92GiY/EoJ+/p3CZNuHjddJ/tm0wMjG1OqeFus+cZVSE/UhjjSNN//USIhnMruvq+xCqGnAFuP7sbQAemj8o481/unRmzc9Gf30FcZkEeoB7OZPzPxwyv5OvzxOMvAzYqc/JM0QPDZ33vIZ931fe7Z0sKpAN95M80HH+PPZqqHYihsRx79GUHBK2i/GEarHhDj+eF/aBHB7Od99XDQzNd9fybCNQw7v9FgBIcQc/l/OzdQkCnAss2cjPHgNUMGw7S/gTihGiMwIct8bzKTOKa3+5lkbWoF0Qn6OHuuCqL/M+kHK45hTzKlDimGopjkES+xlTzTzfLxoT9hxqSIsZFY5DsvJnt4cUGCAdjpmbrhxCB/srgqj27uVUV4cVyV5NHKwr8xrcSzS8LpuCr07wmnYbXsqzYxDh04JY5YMlNKPDd3/UP/wjTQo+teCKO+I2Wk0aFYwda5Zdovy3Qi6nQlEj5Mv+Tq/4WIJensVNFvS0nV/eIuMi+KIi/vR+CdL/6Q/0LEv18YQnqd44VqvoIsiN8Yge8Qf1U4kZzBlNN1lV8My+I7Tn6sqR3iLwuTWWzf3cmKNi0Dp506derUqVOnTp06derUqVOnTp06derU6c/Q/wEvAljB774F2AAAAABJRU5ErkJggg==" alt="Universidad Técnica Particular de Loja"></div>
+    <div>
+      <p class="eyebrow">UTPL TEC · Repositorio de clases</p>
+      <h1>Técnicas sonoras digitales</h1>
+    </div>
+    <dl class="ficha">
+      <dt>Carrera</dt><dd>Tecnología Superior en Creación Audiovisual Digital</dd>
+      <dt>Periodo</dt><dd>Octubre 2026 – febrero 2027 · En línea</dd>
+      <dt>Docente</dt><dd>Juan Pablo Arrobo A.</dd>
+    </dl>
+    <div class="visitas" id="visitas" hidden aria-live="polite"><span class="etq">Visitas<br>al repositorio</span><span class="digitos" id="visitas-num" aria-hidden="true"></span><span class="sr" id="visitas-sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></span></div>
+    <p class="intro">Ocho clases, una por semana. Cada clase recorre la presentación diapositiva por diapositiva, con su descripción, comprobaciones rápidas y recursos enlazados. Las semanas se desbloquean a medida que se publica su presentación.</p>
+  </header>
+
+  <section class="transporte" aria-label="Avance del curso">
+    <span class="contador" id="contador">1 / 8</span>
+    <div class="regla" id="regla" aria-hidden="true"></div>
+    <span class="meta" id="contador-nota">clases publicadas</span>
+    <p class="nota" id="ultima"></p>
+  </section>
+
+  <ol class="pistas" id="pistas" aria-label="Clases por semana"></ol>
+
+  <footer class="pie">
+    <p><b>Cómo se agrega una semana:</b> se comparte la presentación de esa semana, se corrige su contenido, se redacta y aprueba la narración de cada diapositiva y se publica aquí. En ese momento la pista de la semana se desbloquea. Cada clase también se entrega como paquete SCORM para el EVA.</p>
+    <p><b>Temas previstos:</b> tomados del plan docente de la asignatura; pueden ajustarse al publicar cada clase.</p>
+  </footer>
+</div>
+
+<script>
+/* Contador de visitas (Abacus, sin cuenta; funciona en el sitio público, no dentro del artefacto de Claude).
+   Cuenta una visita por sesión del navegador; si el servicio no responde, el contador no se muestra. */
+(function () {
+  var API = 'https://abacus.jasoncameron.dev/', NS = 'utpl-tsd-juanp4105', KEY = 'repositorio';
+  var ya = false; try { ya = sessionStorage.getItem('tsd_visita') === '1'; } catch (e) {}
+  var url = API + (ya ? 'get/' : 'hit/') + NS + '/' + KEY;
+  var ctl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  if (ctl) setTimeout(function () { ctl.abort(); }, 6000);
+  fetch(url, ctl ? { signal: ctl.signal } : {}).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+    if (!d || typeof d.value !== 'number') return;
+    try { sessionStorage.setItem('tsd_visita', '1'); } catch (e) {}
+    var txt = String(d.value).padStart(5, '0');
+    document.getElementById('visitas-num').innerHTML = txt.split('').map(function (c) { return '<span>' + c + '</span>'; }).join('');
+    document.getElementById('visitas-sr').textContent = d.value + ' visitas';
+    document.getElementById('visitas').hidden = false;
+  }).catch(function () {});
+})();
+</script>
+<script>
+(function () {
+  'use strict';
+  /* Para publicar una semana: marcar publicada:true, poner su url y su detalle. */
+  var semanas = [
+    { n: 1, unidad: 'Unidad 1 · Contextualización', titulo: 'El sonido como lenguaje audiovisual', publicada: true,
+      url: 'semana-01/index.html', clave: 'a2_leccion_tsd-semana-01_v1', diapositivas: 27,
+      detalle: '27 diapositivas · ≈ 19 min de narración con subtítulos · 3 comprobaciones',
+      temas: ['Historia y funciones del sonido', 'Cadena electroacústica', 'Micrófonos', 'Fundamentos del sonido digital', 'Formatos de audio'] },
+    { n: 2, unidad: 'Unidad 1 · Contextualización', titulo: 'Propiedades del sonido, equipos y formatos de captura',
+      temas: ['Frecuencia, amplitud, timbre y dinámica', 'Micrófonos y grabadoras', 'Frecuencia de muestreo y profundidad de bits', 'WAV, MP3 y FLAC'] },
+    { n: 3, unidad: 'Unidad 2 · Análisis', titulo: 'Producción y edición de audio digital',
+      temas: ['Herramientas y flujos de trabajo', 'Comparativa de DAW', 'Corte, normalización y efectos de amplitud'] },
+    { n: 4, unidad: 'Unidad 2 · Análisis', titulo: 'Diseño sonoro: ambientes, efectos y paisajes sonoros',
+      temas: ['Técnicas de ambientación', 'Construcción narrativa', 'Estudio de casos: bandas sonoras'] },
+    { n: 5, unidad: 'Unidad 3 · Intervención', titulo: 'Del concepto a la mezcla',
+      temas: ['Ecualización, paneo y compresión', 'Plugins de inteligencia artificial', 'Primera versión del diseño sonoro'] },
+    { n: 6, unidad: 'Unidad 3 · Intervención', titulo: 'Masterización y sincronización con la imagen',
+      temas: ['Software de mezcla y masterización', 'Masterización asistida por IA', 'Sincronización y narrativa sonora'] },
+    { n: 7, unidad: 'Unidad 4 · Síntesis', titulo: 'IA en la producción sonora y calidad del sonido',
+      temas: ['Aplicaciones de IA en el diseño sonoro', 'Espectrogramas, LUFS y fase', 'Diseño sonoro final del cortometraje'] },
+    { n: 8, unidad: 'Unidad 4 · Síntesis', titulo: 'Proyecto sonoro final y reflexión crítica',
+      temas: ['Presentación del proyecto', 'Retroalimentación crítica', 'Informe de aprendizaje'] }
+  ];
+
+  var publicadas = semanas.filter(function (s) { return s.publicada; });
+  var ultima = publicadas[publicadas.length - 1];
+  var TOTAL = semanas.length;
+
+  function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function leerAvance(s) {
+    if (!s.clave) return null;
+    try { var p = JSON.parse(localStorage.getItem(s.clave)); if (!p) return null;
+      return { vistas: Object.keys(p.vistas || {}).length, fin: !!p.fin }; } catch (e) { return null; }
+  }
+  function onda(semilla, activa) {
+    var w = 600, h = 38, n = 75, bw = w / n, out = '';
+    if (!activa) return '<svg class="onda" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="19" x2="600" y2="19" stroke="var(--wave-off)" stroke-width="2" stroke-dasharray="4 6"/></svg>';
+    var x = semilla * 9301 + 49297;
+    for (var i = 0; i < n; i++) {
+      x = (x * 9301 + 49297) % 233280;
+      var r = x / 233280, env = Math.sin(Math.PI * i / n) * .7 + .3;
+      var a = Math.max(2, (r * .6 + .4) * env * (h - 6));
+      out += '<rect x="' + (i * bw + 1).toFixed(1) + '" y="' + ((h - a) / 2).toFixed(1) + '" width="' + (bw - 2).toFixed(1) + '" height="' + a.toFixed(1) + '" rx="1.5" fill="var(--accent)" style="animation-delay:' + (i * 8) + 'ms"/>';
+    }
+    return '<svg class="onda" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none" aria-hidden="true">' + out + '</svg>';
+  }
+  var candado = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+  var play = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5v14l12-7z"/></svg>';
+
+  document.getElementById('contador').textContent = publicadas.length + ' / ' + TOTAL;
+  document.getElementById('regla').innerHTML = semanas.map(function (s) { return '<span class="' + (s.publicada ? 'on' : '') + '">S' + s.n + '</span>'; }).join('') +
+    '<i class="cabezal" style="left:' + (publicadas.length / TOTAL * 100) + '%"></i>';
+  if (ultima) document.getElementById('ultima').textContent = 'Última clase publicada: semana ' + ultima.n + ', «' + ultima.titulo + '». La semana ' + (ultima.n + 1 <= TOTAL ? (ultima.n + 1) + ' se desbloquea con su presentación.' : 'final ya está disponible.');
+
+  document.getElementById('pistas').innerHTML = semanas.map(function (s) {
+    var num = String(s.n).padStart(2, '0');
+    var temas = '<ul class="temas" aria-label="Temas">' + s.temas.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>';
+    var canal = '<div class="canal"><span class="s">SEMANA</span><span class="n">' + num + '</span><span class="led" aria-hidden="true"></span></div>';
+    if (s.publicada) {
+      var av = leerAvance(s), txtAv = '';
+      if (av && av.fin) txtAv = '<p class="avance-propio">✓ Clase terminada</p>';
+      else if (av && av.vistas) txtAv = '<p class="avance-propio">Su avance: ' + av.vistas + ' de ' + s.diapositivas + ' diapositivas</p>';
+      return '<li class="pista publicada">' + canal +
+        '<div class="cuerpo"><p class="unidad">' + esc(s.unidad) + '</p><h2>' + esc(s.titulo) + '</h2>' + temas + onda(s.n, true) + '</div>' +
+        '<div class="lado"><span class="estado on">Disponible</span><a class="boton" href="' + esc(s.url) + '">' + play + (av && av.vistas && !av.fin ? 'Continuar la clase' : 'Abrir la clase') + '</a>' +
+        '<p class="meta">' + esc(s.detalle) + '</p>' + txtAv + '</div></li>';
+    }
+    return '<li class="pista bloqueada" aria-disabled="true">' + canal +
+      '<div class="cuerpo"><p class="unidad">' + esc(s.unidad) + ' · temas previstos</p><h2>' + esc(s.titulo) + '</h2>' + temas + onda(s.n, false) + '</div>' +
+      '<div class="lado"><span class="estado off">' + candado + 'Bloqueada</span><p class="espera">Se desbloquea cuando se publique la presentación de la semana ' + s.n + '.</p></div></li>';
+  }).join('');
+})();
+</script>
+
+</body>
+</html>

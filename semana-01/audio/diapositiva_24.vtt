@@ -1,0 +1,28 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:04.000
+Digitalizar es traducir la física a ceros y unos.
+
+00:00:04.000 --> 00:00:09.253
+La gráfica muestra una onda continua y su versión digital en escalones.
+
+00:00:09.253 --> 00:00:13.492
+El eje horizontal representa la frecuencia de muestreo.
+
+00:00:13.492 --> 00:00:20.549
+Indica cuántas fotografías del sonido se toman por segundo y determina la respuesta en frecuencia.
+
+00:00:20.549 --> 00:00:24.150
+El eje vertical representa la profundidad de bits.
+
+00:00:24.150 --> 00:00:31.832
+Indica cuánta precisión tiene cada fotografía y determina el rango dinámico y la fidelidad sonora.
+
+00:00:31.832 --> 00:00:35.133
+La conclusión aparece en el recuadro inferior.
+
+00:00:35.133 --> 00:00:40.957
+A mayor resolución en la matriz, mayor fidelidad sonora respecto del original.
+
+00:00:40.957 --> 00:00:47.940
+Un estándar habitual en producción audiovisual es grabar a cuarenta y ocho kilohercios y veinticuatro bits.

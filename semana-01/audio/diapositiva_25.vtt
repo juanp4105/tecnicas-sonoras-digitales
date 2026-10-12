@@ -1,0 +1,34 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:04.061
+Los formatos de audio se distinguen por el peso que dan a la calidad.
+
+00:00:04.061 --> 00:00:07.572
+Los formatos sin compresión son el original.
+
+00:00:07.572 --> 00:00:11.162
+WAV y AIFF pertenecen a este grupo.
+
+00:00:11.162 --> 00:00:20.100
+Conservan el cien por ciento de los datos físicos capturados y se usan en cine, diseño sonoro profesional y mezcla.
+
+00:00:20.100 --> 00:00:25.112
+Los formatos con compresión sin pérdida son los eficientes.
+
+00:00:25.112 --> 00:00:28.022
+FLAC y ALAC pertenecen a este grupo.
+
+00:00:28.022 --> 00:00:36.924
+Reducen matemáticamente el tamaño del archivo sin sacrificar fidelidad, y sirven para archivo de alta calidad y distribución audiófila.
+
+00:00:36.924 --> 00:00:40.692
+Los formatos con compresión con pérdida son los prácticos.
+
+00:00:40.692 --> 00:00:43.072
+MP3 y AAC pertenecen a este grupo.
+
+00:00:43.072 --> 00:00:52.890
+Eliminan frecuencias inaudibles para reducir mucho el peso, y se usan en la web, el streaming y las plataformas de pódcast.
+
+00:00:52.890 --> 00:00:55.322
+Para sus masters trabaje siempre sin pérdida.
