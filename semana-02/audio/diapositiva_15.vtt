@@ -1,0 +1,22 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:04.594
+Los tres programas más comunes en la asignatura exportan de forma parecida.
+
+00:00:04.594 --> 00:00:12.755
+En Audacity, el menú Archivo, opción Exportar audio, abre una ventana donde elige el formato, la carpeta y la calidad.
+
+00:00:12.755 --> 00:00:17.384
+En Reaper, el menú File, opción Render, abre una ventana más detallada.
+
+00:00:17.384 --> 00:00:23.571
+Allí también define la frecuencia de muestreo, los canales y el formato de salida.
+
+00:00:23.571 --> 00:00:31.139
+En Adobe Audition, el menú Archivo, opción Exportar y luego Archivo, ofrece la misma elección.
+
+00:00:31.139 --> 00:00:36.911
+En los tres casos la decisión es la que vio en la diapositiva anterior.
+
+00:00:36.911 --> 00:00:45.312
+Exporte sin pérdida para el máster y para el trabajo de mezcla, y reserve el MP3 o el AAC para la versión que se publica.

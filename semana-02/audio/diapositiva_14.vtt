@@ -1,0 +1,40 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:03.841
+Este esquema sigue el camino del sonido hasta el archivo.
+
+00:00:03.841 --> 00:00:07.872
+Primero, el micrófono capta una onda analógica.
+
+00:00:07.872 --> 00:00:13.557
+Segundo, el conversor analógico digital la mide muchas veces por segundo.
+
+00:00:13.557 --> 00:00:19.636
+Esa es la frecuencia de muestreo, por ejemplo cuarenta y cuatro mil cien muestras por segundo.
+
+00:00:19.636 --> 00:00:27.808
+Además registra cada medida con cierta precisión, que es la profundidad de bits, por ejemplo dieciséis bits.
+
+00:00:27.808 --> 00:00:33.366
+Tercero, la señal digital se edita en la estación de trabajo de audio.
+
+00:00:33.366 --> 00:00:39.126
+Cuarto, se exporta para su reproducción, y ahí elige el formato.
+
+00:00:39.126 --> 00:00:44.411
+WAV y AIFF no tienen compresión y conservan la máxima calidad.
+
+00:00:44.411 --> 00:00:47.540
+Un minuto en estéreo ocupa unos diez megabytes.
+
+00:00:47.540 --> 00:00:53.563
+FLAC y ALAC comprimen sin pérdida, de modo que el archivo pesa menos y se recupera idéntico.
+
+00:00:53.563 --> 00:00:57.257
+MP3 y AAC comprimen con pérdida.
+
+00:00:57.257 --> 00:01:03.976
+Descartan información que el oído apenas percibe y por eso son ideales para la web y el pódcast.
+
+00:01:03.976 --> 00:01:08.933
+A ciento veintiocho kilobits por segundo, un minuto ocupa cerca de un megabyte.
