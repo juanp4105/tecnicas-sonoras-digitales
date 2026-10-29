@@ -101,6 +101,30 @@ h1{font-family:var(--display); font-stretch:68%; font-weight:800; text-transform
 .pie p{margin:0; max-width:80ch}
 .pie b{color:var(--fg)}
 
+/* Puerta de acceso con código individual (solo GitHub Pages; inactiva sin URL del Apps Script) */
+.puerta{position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center; padding:16px;
+  background:color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter:blur(3px)}
+.puerta-caja{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:24px; width:100%; max-width:400px;
+  display:flex; flex-direction:column; gap:12px; box-shadow:0 12px 32px rgba(0,0,0,.14)}
+.puerta-caja h2{font-family:var(--display); font-stretch:85%; font-weight:700; font-size:1.35rem; line-height:1.15; margin:0}
+.puerta-caja p{margin:0; font-size:.88rem; color:var(--muted)}
+.puerta-caja label{font-family:var(--mono); font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+.puerta-caja input{font-family:var(--mono); font-size:1.05rem; letter-spacing:.06em; text-transform:uppercase; padding:10px 12px;
+  border-radius:8px; border:1.5px solid var(--line); background:var(--bg); color:var(--fg); min-height:44px; width:100%}
+.puerta-caja input:focus{outline:3px solid var(--lime-bg); outline-offset:1px}
+.puerta-acciones{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+.puerta-acciones .boton{border:0; cursor:pointer; font:inherit; font-weight:600}
+.puerta-sin{background:none; border:0; padding:6px 2px; color:var(--accent); font:inherit; font-size:.86rem; text-decoration:underline; cursor:pointer}
+.puerta-error{color:var(--signal); font-size:.84rem; margin:0; min-height:1.3em}
+.sesion-codigo{grid-column:1/-1; margin:0; font-size:.8rem; color:var(--muted)}
+.sesion-codigo b{font-family:var(--mono); font-weight:500; color:var(--fg)}
+.sesion-codigo button{background:none; border:0; padding:0 2px; color:var(--accent); font:inherit; text-decoration:underline; cursor:pointer}
+/* Progreso colectivo y anónimo por semana */
+.prog-mini{display:flex; flex-direction:column; gap:4px}
+.prog-mini .barra{height:5px; border-radius:999px; background:var(--line); overflow:hidden}
+.prog-mini .lleno{height:100%; width:0; background:var(--accent); border-radius:999px; transition:width .5s ease}
+.prog-mini .pct{font-family:var(--mono); font-size:.7rem; color:var(--muted)}
+
 @media (max-width:760px){
   .cabecera{grid-template-columns:1fr}
   .pista{grid-template-columns:64px minmax(0,1fr)}
@@ -114,6 +138,21 @@ h1{font-family:var(--display); font-stretch:68%; font-weight:800; text-transform
   @keyframes sube{from{transform:scaleY(.2)}to{transform:scaleY(1)}}
 }
 </style>
+
+<div class="puerta" id="puerta" role="dialog" aria-modal="true" aria-labelledby="puerta-titulo" hidden>
+  <form class="puerta-caja" id="puerta-form" autocomplete="off" novalidate>
+    <h2 id="puerta-titulo">Ingrese con su código</h2>
+    <p id="puerta-texto">Escriba el código individual que le entregó el profesor. Se guarda en este navegador y no se le volverá a pedir.</p>
+    <label for="puerta-input">Código</label>
+    <input id="puerta-input" type="text" inputmode="text" spellcheck="false" placeholder="TSD-XXXXX" maxlength="9" aria-describedby="puerta-error">
+    <p class="puerta-error" id="puerta-error" aria-live="polite"></p>
+    <div class="puerta-acciones">
+      <button class="boton" id="puerta-boton" type="submit">Ingresar</button>
+      <button class="puerta-sin" id="puerta-sin" type="button">Continuar sin código</button>
+    </div>
+    <p id="puerta-nota">Las semanas 1 a 4 siguen abiertas para todos. Desde la semana 5, cada clase pide el código.</p>
+  </form>
+</div>
 
 <div class="envoltura">
   <header class="cabecera">
@@ -136,6 +175,7 @@ h1{font-family:var(--display); font-stretch:68%; font-weight:800; text-transform
     <div class="regla" id="regla" aria-hidden="true"></div>
     <span class="meta" id="contador-nota">clases publicadas</span>
     <p class="nota" id="ultima"></p>
+    <p class="sesion-codigo" id="sesion-codigo" hidden>Ingresó con el código <b id="sesion-codigo-txt"></b> · <button type="button" id="sesion-cambiar">¿No es su código? Cambiar</button></p>
   </section>
 
   <ol class="pistas" id="pistas" aria-label="Clases por semana"></ol>
@@ -236,8 +276,10 @@ h1{font-family:var(--display); font-stretch:68%; font-weight:800; text-transform
       else if (av && av.vistas) txtAv = '<p class="avance-propio">Su avance: ' + av.vistas + ' de ' + s.diapositivas + ' diapositivas</p>';
       return '<li class="pista publicada">' + canal +
         '<div class="cuerpo"><p class="unidad">' + esc(s.unidad) + '</p><h2>' + esc(s.titulo) + '</h2>' + temas + onda(s.n, true) + '</div>' +
-        '<div class="lado"><span class="estado on">Disponible</span><a class="boton" href="' + esc(s.url) + '">' + play + (av && av.vistas && !av.fin ? 'Continuar la clase' : 'Abrir la clase') + '</a>' +
-        '<p class="meta">' + esc(s.detalle) + '</p>' + txtAv + '</div></li>';
+        '<div class="lado"><span class="estado on">Disponible</span><a class="boton" href="' + esc(s.url) + '" data-semana="semana-' + num + '" data-n="' + s.n + '">' + play + (av && av.vistas && !av.fin ? 'Continuar la clase' : 'Abrir la clase') + '</a>' +
+        '<p class="meta">' + esc(s.detalle) + '</p>' + txtAv +
+        '<div class="prog-mini" id="prog-semana-' + num + '" hidden><div class="barra"><div class="lleno"></div></div><span class="pct"></span></div>' +
+        '</div></li>';
     }
     return '<li class="pista bloqueada" aria-disabled="true">' + canal +
       '<div class="cuerpo"><p class="unidad">' + esc(s.unidad) + ' · temas previstos</p><h2>' + esc(s.titulo) + '</h2>' + temas + onda(s.n, false) + '</div>' +
@@ -246,5 +288,131 @@ h1{font-family:var(--display); font-stretch:68%; font-weight:800; text-transform
 })();
 </script>
 
+<script>
+/* Puerta de acceso con código individual + registro de ingresos + progreso colectivo anónimo.
+   Todo pasa por un Google Apps Script del profesor (AppsScript_Codigo_TSD.gs). Mientras APPS_SCRIPT_URL
+   siga en 'PENDIENTE_URL_APPS_SCRIPT', esta sección no hace nada y la página funciona con acceso libre.
+   Solo funciona en GitHub Pages: la copia del repositorio en Claude bloquea llamadas a servicios externos. */
+(function () {
+  'use strict';
+  // ⚠️ Reemplazar por la URL de la aplicación web del Apps Script (termina en /exec). Paso 5 de la guía.
+  var APPS_SCRIPT_URL = 'PENDIENTE_URL_APPS_SCRIPT';
+  var PRIMERA_SEMANA_CON_CODIGO = 5;   // las semanas 1 a 4, ya compartidas, quedan de acceso libre
+  var CODIGO_DOCENTE = 'TSD-PROFE';    // se registra como «docente» y no cuenta en el porcentaje
+  var CLAVE = 'tsd_codigo';
+
+  if (!/^https:\/\/script\.google(usercontent)?\.com\//.test(APPS_SCRIPT_URL)) return;
+
+  var $ = function (id) { return document.getElementById(id); };
+  var puerta = $('puerta'), form = $('puerta-form'), input = $('puerta-input'), error = $('puerta-error');
+  var destino = null, ultimoFoco = null;
+
+  function formatoValido(c) { return /^TSD-[A-Z2-9]{5}$/.test(c); }
+  function leer() { try { var c = localStorage.getItem(CLAVE); return c && formatoValido(c) ? c : null; } catch (e) { return null; } }
+  function guardar(c) { try { localStorage.setItem(CLAVE, c); } catch (e) {} }
+  function borrar() { try { localStorage.removeItem(CLAVE); } catch (e) {} }
+
+  function baliza(codigo, pagina, listo) {
+    var hecho = false, fin = function () { if (!hecho) { hecho = true; if (listo) listo(); } };
+    if (!codigo) { fin(); return; }
+    var img = new Image();
+    img.onload = img.onerror = fin;
+    setTimeout(fin, 900);   // nunca demorar la apertura de la clase más de un segundo
+    img.src = APPS_SCRIPT_URL + '?accion=log&codigo=' + encodeURIComponent(codigo) +
+      '&pagina=' + encodeURIComponent(pagina) + '&t=' + Date.now();
+  }
+
+  function jsonp(params, alListo, alFallar, espera) {
+    var cb = 'tsdCb' + Date.now() + Math.floor(Math.random() * 1000), s = document.createElement('script'), vencido = false;
+    var t = setTimeout(function () { vencido = true; limpiar(); alFallar(); }, espera || 6000);
+    function limpiar() { try { delete window[cb]; } catch (e) { window[cb] = undefined; } if (s.parentNode) s.parentNode.removeChild(s); }
+    window[cb] = function (d) { if (vencido) return; clearTimeout(t); limpiar(); alListo(d); };
+    s.onerror = function () { if (vencido) return; clearTimeout(t); limpiar(); alFallar(); };
+    s.src = APPS_SCRIPT_URL + '?' + params + '&callback=' + cb;
+    document.body.appendChild(s);
+  }
+
+  function cargarEstadisticas() {
+    jsonp('accion=stats', function (d) {
+      if (!d || !d.paginas) return;
+      Array.prototype.forEach.call(document.querySelectorAll('[data-semana]'), function (a) {
+        if (+a.dataset.n < PRIMERA_SEMANA_CON_CODIGO) return;
+        var caja = $('prog-' + a.dataset.semana); if (!caja) return;
+        var pct = (d.paginas[a.dataset.semana] || {}).porcentaje || 0;
+        caja.querySelector('.lleno').style.width = Math.min(100, pct) + '%';
+        caja.querySelector('.pct').textContent = pct + '% de la clase ya la revisó';
+        caja.hidden = false;
+      });
+    }, function () {});
+  }
+
+  function mostrarSesion() {
+    var c = leer();
+    $('sesion-codigo').hidden = !c;
+    if (c) $('sesion-codigo-txt').textContent = c;
+  }
+
+  function abrirPuerta(semana) {
+    destino = semana || null;
+    ultimoFoco = document.activeElement;
+    $('puerta-titulo').textContent = destino ? 'Esta clase pide su código' : 'Ingrese con su código';
+    $('puerta-sin').textContent = destino ? 'Cancelar' : 'Continuar sin código';
+    error.textContent = ''; input.value = '';
+    puerta.hidden = false;
+    setTimeout(function () { input.focus(); }, 30);
+  }
+  function cerrarPuerta() {
+    puerta.hidden = true; destino = null;
+    if (ultimoFoco && ultimoFoco.focus) ultimoFoco.focus();
+  }
+
+  function aceptar(codigo) {
+    guardar(codigo);
+    var ir = destino;
+    cerrarPuerta(); mostrarSesion();
+    try { sessionStorage.setItem('tsd_indice', '1'); } catch (e) {}
+    baliza(codigo, 'indice');
+    cargarEstadisticas();
+    if (ir) baliza(codigo, ir.dataset.semana, function () { location.href = ir.href; });
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var val = input.value.trim().toUpperCase().replace(/\s+/g, '');
+    if (/^TSD[A-Z2-9]{5}$/.test(val)) val = 'TSD-' + val.slice(3);
+    if (!formatoValido(val)) { error.textContent = 'Revise el código: tiene la forma TSD-XXXXX.'; return; }
+    if (val === CODIGO_DOCENTE) { aceptar(val); return; }
+    var boton = $('puerta-boton'); boton.disabled = true; error.textContent = 'Comprobando…';
+    jsonp('accion=validar&codigo=' + encodeURIComponent(val), function (d) {
+      boton.disabled = false;
+      if (d && d.valido === false) { error.textContent = 'Ese código no está en la lista de la clase. Revíselo o consulte al profesor.'; return; }
+      aceptar(val);
+    }, function () { boton.disabled = false; aceptar(val); /* sin respuesta del servidor: vale el formato */ });
+  });
+  $('puerta-sin').addEventListener('click', cerrarPuerta);
+  puerta.addEventListener('keydown', function (e) { if (e.key === 'Escape') cerrarPuerta(); });
+  $('sesion-cambiar').addEventListener('click', function () { borrar(); mostrarSesion(); abrirPuerta(); });
+
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[data-semana]');
+    if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    var codigo = leer();
+    if (!codigo && +a.dataset.n < PRIMERA_SEMANA_CON_CODIGO) return;   // semana libre: se abre sin más
+    e.preventDefault();
+    if (!codigo) { abrirPuerta(a); return; }
+    baliza(codigo, a.dataset.semana, function () { location.href = a.href; });
+  });
+
+  var codigo = leer();
+  mostrarSesion();
+  if (codigo) {
+    var visto = false; try { visto = sessionStorage.getItem('tsd_indice') === '1'; sessionStorage.setItem('tsd_indice', '1'); } catch (e) {}
+    if (!visto) baliza(codigo, 'indice');
+    cargarEstadisticas();
+  } else {
+    abrirPuerta();
+  }
+})();
+</script>
 </body>
 </html>
