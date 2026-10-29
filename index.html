@@ -148,9 +148,9 @@ h1{font-family:var(--display); font-stretch:68%; font-weight:800; text-transform
     <p class="puerta-error" id="puerta-error" aria-live="polite"></p>
     <div class="puerta-acciones">
       <button class="boton" id="puerta-boton" type="submit">Ingresar</button>
-      <button class="puerta-sin" id="puerta-sin" type="button">Continuar sin código</button>
+      <button class="puerta-sin" id="puerta-sin" type="button" hidden>Cancelar</button>
     </div>
-    <p id="puerta-nota">Las semanas 1 a 4 siguen abiertas para todos. Desde la semana 5, cada clase pide el código.</p>
+    <p id="puerta-nota">Todas las clases del repositorio piden este código. Si no lo tiene, consúltelo en el anuncio del EVA.</p>
   </form>
 </div>
 
@@ -297,7 +297,7 @@ h1{font-family:var(--display); font-stretch:68%; font-weight:800; text-transform
   'use strict';
   // ⚠️ Reemplazar por la URL de la aplicación web del Apps Script (termina en /exec). Paso 5 de la guía.
   var APPS_SCRIPT_URL = 'PENDIENTE_URL_APPS_SCRIPT';
-  var PRIMERA_SEMANA_CON_CODIGO = 5;   // las semanas 1 a 4, ya compartidas, quedan de acceso libre
+  var PRIMERA_SEMANA_CON_CODIGO = 1;   // todas las semanas piden código (decisión del profesor, 29 oct 2026)
   var CODIGO_DOCENTE = 'TSD-PROFE';    // se registra como «docente» y no cuenta en el porcentaje
   var CLAVE = 'tsd_codigo';
 
@@ -356,7 +356,8 @@ h1{font-family:var(--display); font-stretch:68%; font-weight:800; text-transform
     destino = semana || null;
     ultimoFoco = document.activeElement;
     $('puerta-titulo').textContent = destino ? 'Esta clase pide su código' : 'Ingrese con su código';
-    $('puerta-sin').textContent = destino ? 'Cancelar' : 'Continuar sin código';
+    $('puerta-sin').textContent = 'Cancelar';
+    $('puerta-sin').hidden = !destino && !leer();
     error.textContent = ''; input.value = '';
     puerta.hidden = false;
     setTimeout(function () { input.focus(); }, 30);
@@ -390,7 +391,7 @@ h1{font-family:var(--display); font-stretch:68%; font-weight:800; text-transform
     }, function () { boton.disabled = false; aceptar(val); /* sin respuesta del servidor: vale el formato */ });
   });
   $('puerta-sin').addEventListener('click', cerrarPuerta);
-  puerta.addEventListener('keydown', function (e) { if (e.key === 'Escape') cerrarPuerta(); });
+  puerta.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('puerta-sin').hidden) cerrarPuerta(); });
   $('sesion-cambiar').addEventListener('click', function () { borrar(); mostrarSesion(); abrirPuerta(); });
 
   document.addEventListener('click', function (e) {
