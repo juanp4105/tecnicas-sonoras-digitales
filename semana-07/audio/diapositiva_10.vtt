@@ -1,0 +1,28 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:02.806
+El espectrograma le permite ver el sonido.
+
+00:00:02.806 --> 00:00:09.484
+El eje horizontal es el tiempo, el vertical es la frecuencia y el brillo indica la energía.
+
+00:00:09.484 --> 00:00:12.495
+Algunos problemas se reconocen a simple vista.
+
+00:00:12.495 --> 00:00:18.749
+Una línea horizontal en lo más bajo es el zumbido eléctrico de cincuenta o sesenta hercios.
+
+00:00:18.749 --> 00:00:22.549
+Las líneas verticales son clics y golpes de micrófono.
+
+00:00:22.549 --> 00:00:26.817
+Las manchas en los agudos son la sibilancia de las eses.
+
+00:00:26.817 --> 00:00:30.527
+Una bruma de fondo constante es ruido ambiente.
+
+00:00:30.527 --> 00:00:37.148
+Y un corte plano por encima de los dieciséis kilohercios delata un MP3 de baja calidad.
+
+00:00:37.148 --> 00:00:40.941
+En Audacity, active esta vista desde el menú de la pista.

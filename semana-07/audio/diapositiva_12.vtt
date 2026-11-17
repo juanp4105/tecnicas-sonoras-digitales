@@ -1,0 +1,31 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:03.920
+La fase define si dos señales se ayudan o se anulan.
+
+00:00:03.920 --> 00:00:07.914
+Si dos ondas coinciden, se suman y la señal crece.
+
+00:00:07.914 --> 00:00:13.660
+Si están en oposición, se cancelan, y al escucharlas en mono el sonido desaparece.
+
+00:00:13.660 --> 00:00:16.740
+Para detectarlo use un medidor de correlación.
+
+00:00:16.740 --> 00:00:19.096
+Más uno indica mono perfecto.
+
+00:00:19.096 --> 00:00:21.529
+Cero, un estéreo amplio.
+
+00:00:21.529 --> 00:00:23.981
+Menos uno, cancelación.
+
+00:00:23.981 --> 00:00:28.282
+El vectorscopio muestra la misma información como una figura.
+
+00:00:28.282 --> 00:00:33.487
+Esto importa porque muchos teléfonos y parlantes Bluetooth suman los dos canales.
+
+00:00:33.487 --> 00:00:39.137
+Si el medidor marca valores negativos de forma sostenida, revise la fase antes de exportar.

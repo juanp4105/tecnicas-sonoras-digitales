@@ -1,0 +1,34 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:04.075
+Para medir la sonoridad se usa una unidad llamada LUFS.
+
+00:00:04.075 --> 00:00:09.251
+Mide el volumen tal como lo percibe el oído, según una norma internacional.
+
+00:00:09.251 --> 00:00:13.118
+La sonoridad integrada es el promedio de toda la pieza.
+
+00:00:13.118 --> 00:00:18.997
+La de corto plazo mide tres segundos y la momentánea, cuatrocientos milisegundos.
+
+00:00:18.997 --> 00:00:26.474
+El pico verdadero, en decibelios, indica el máximo real de la señal, incluso entre muestras.
+
+00:00:26.474 --> 00:00:32.384
+Y el rango de sonoridad dice cuánto varía el volumen entre las partes suaves y las fuertes.
+
+00:00:32.384 --> 00:00:34.409
+Cada destino tiene su meta.
+
+00:00:34.409 --> 00:00:41.670
+La televisión y la radio europeas piden menos veintitrés LUFS, con picos por debajo de menos un decibelio.
+
+00:00:41.670 --> 00:00:44.790
+Spotify normaliza a menos catorce.
+
+00:00:44.790 --> 00:00:49.063
+Por eso un máster más fuerte no suena más fuerte en las plataformas.
+
+00:00:49.063 --> 00:00:50.737
+Solo pierde dinámica.
